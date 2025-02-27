@@ -1,40 +1,36 @@
-name: SonarQube Scan
+name: SonarQube Analysis
 
 on:
   push:
     branches:
-      - main
+      - main  # Change to the branch you want to analyze
   pull_request:
     branches:
       - main
 
 jobs:
-  sonar_scan:
-    runs-on: windows-latest
+  sonar:
+    name: SonarQube Scan
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set Up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-
-      - name: Set SonarScanner Path
-        shell: cmd
+      - name: Install SonarScanner CLI
         run: |
-          SET PATH=C:\Users\balamurugan.kaliyapp\Documents\SonarCLIScanner\sonar-scanner-5.0.1.3006-windows\bin;%PATH%
-          echo %PATH%  # Debugging step to check if the path is set correctly
+          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+          unzip sonar-scanner.zip
+          sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
+          echo "/opt/sonar-scanner/bin" >> $GITHUB_PATH
 
-      - name: Run SonarQube Scanner
-        shell: cmd
+      - name: Run SonarQube Scan
+        env:
+          SONAR_TOKEN: "sqa_47073fd7cd44d214a50e771e3cbe9376199008c4"
+          SONAR_HOST_URL: "https://panpsourceuat.ent.cgi.com/sonar/"  # Change if using SonarCloud
         run: |
-          sonar-scanner ^
-          -Dsonar.projectKey=TEST_AI ^
-          -Dsonar.sources=. ^
-          -Dsonar.host.url=https://panpsourceuat.ent.cgi.com/sonar/ ^
-          -Dsonar.login=sqa_47073fd7cd44d214a50e771e3cbe9376199008c4 ^
-          -Dsonar.language=java ^
-          -X
+          sonar-scanner \
+            -Dsonar.projectKey=TEST_AI \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKEN
