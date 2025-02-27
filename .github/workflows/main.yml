@@ -26,7 +26,7 @@ jobs:
 
       - name: Run SonarQube Scan (Local Scanner)
         run: |
-          C:\Users\balamurugan.kaliyapp\Documents\SonarCLIScanner\sonar-scanner-5.0.1.3006-windows\bin\sonar-scanner.bat ^
+          C:\\Users\\balamurugan.kaliyapp\\Documents\\SonarCLIScanner\\sonar-scanner-5.0.1.3006-windows\\bin\\sonar-scanner.bat ^
             -Dsonar.projectKey=TEST_AI ^
             -Dsonar.sources=. ^
             -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} ^
