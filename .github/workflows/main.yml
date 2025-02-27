@@ -22,18 +22,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install SonarQube Scanner
-        run: |
-          choco install sonarscanner -y
-        shell: cmd
-
       - name: Run SonarQube Scanner
         env:
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+             SONAR_HOST_URL: "https://panpsourceuat.ent.cgi.com/sonar/"
+             SONAR_TOKEN: "sqa_47073fd7cd44d214a50e771e3cbe9376199008c4"
+        # Fetch from GitHub Secrets
         shell: cmd
         run: |
-          sonar-scanner ^
+          "C:\Users\balamurugan.kaliyapp\Documents\SonarCLIScanner\sonar-scanner-5.0.1.3006-windows\bin\sonar-scanner.bat" ^
           -Dsonar.projectKey=TEST_AI ^
           -Dsonar.sources=. ^
           -Dsonar.host.url=%SONAR_HOST_URL% ^
