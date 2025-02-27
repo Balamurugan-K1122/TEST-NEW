@@ -28,4 +28,4 @@ jobs:
           SONAR_TOKEN: "sqa_47073fd7cd44d214a50e771e3cbe9376199008c4"
           SONAR_HOST_URL: "https://panpsourceuat.ent.cgi.com/sonar"
         run: |
-          sonar-scanner.bat -D"sonar.projectKey=TEST_AI" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.scanner.acceptServerCertificates=true" -D"sonar.login=$env:SONAR_TOKEN" -X
+          sonar-scanner.bat -D"sonar.projectKey=TEST_AI" -D"sonar.sources=." -D"sonar.host.url=$env:SONAR_HOST_URL" -D"sonar.scanner.acceptServerCertificates=true" -D"sonar.token=$env:SONAR_TOKEN" -X
