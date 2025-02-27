@@ -22,15 +22,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Run SonarQube Scanner
+      - name: Run SonarQube Scanner in CMD
         env:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: cmd
         run: |
           "C:\Users\balamurugan.kaliyapp\Documents\SonarCLIScanner\sonar-scanner-5.0.1.3006-windows\bin\sonar-scanner.bat" ^
-            -Dsonar.projectKey=TEST_AI ^
-            -Dsonar.sources=. ^
-            -Dsonar.host.url=$env:SONAR_HOST_URL ^
-            -Dsonar.login=$env:SONAR_TOKEN ^
-            -Dsonar.language=java ^
-            -X
+          -Dsonar.projectKey=TEST_AI ^
+          -Dsonar.sources=. ^
+          -Dsonar.host.url=%SONAR_HOST_URL% ^
+          -Dsonar.login=%SONAR_TOKEN% ^
+          -Dsonar.language=java ^
+          -X
