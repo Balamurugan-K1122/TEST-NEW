@@ -3,7 +3,7 @@ name: SonarQube Analysis
 on:
   push:
     branches:
-      - main  # Change to your main branch
+      - main
   pull_request:
     branches:
       - main
@@ -11,33 +11,25 @@ on:
 jobs:
   sonar:
     name: SonarQube Scan
-    runs-on: ubuntu-latest  # Use "self-hosted" if your SonarQube is private
+    runs-on: windows-latest  # Use Windows runner
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Debug Network Connectivity
+      - name: Download and Install SonarScanner for Windows
         run: |
-          echo "Checking network connectivity..."
-          curl -v https://panpsourceuat.ent.cgi.com/sonar || echo "Failed to reach SonarQube"
-          ping -c 4 panpsourceuat.ent.cgi.com || echo "Ping failed"
-          nslookup panpsourceuat.ent.cgi.com || echo "DNS lookup failed"
-
-      - name: Install SonarScanner CLI
-        run: |
-          curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-          unzip sonar-scanner.zip
-          sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
-          echo "/opt/sonar-scanner/bin" >> $GITHUB_PATH
+          Invoke-WebRequest -Uri "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-windows.zip" -OutFile "sonar-scanner.zip"
+          Expand-Archive -Path sonar-scanner.zip -DestinationPath "C:\sonar-scanner"
+          echo "C:\sonar-scanner\sonar-scanner-5.0.1.3006-windows\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Run SonarQube Scan with Debug Logs
         env:
           SONAR_TOKEN: "sqa_47073fd7cd44d214a50e771e3cbe9376199008c4"
           SONAR_HOST_URL: "https://panpsourceuat.ent.cgi.com/sonar"
         run: |
-          sonar-scanner \
-            -Dsonar.projectKey=TEST_AI \
-            -Dsonar.sources=. \
-            -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN -X  # Debug mode
+          sonar-scanner.bat `
+            -Dsonar.projectKey=TEST_AI `
+            -Dsonar.sources=. `
+            -Dsonar.host.url=$env:SONAR_HOST_URL `
+            -Dsonar.login=$env:SONAR_TOKEN -X
