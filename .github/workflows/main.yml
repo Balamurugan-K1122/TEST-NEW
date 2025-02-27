@@ -1,36 +1,36 @@
-name: SonarQube Analysis
+name: SonarQube Scan
 
 on:
   push:
     branches:
       - main
-      - 'feature/**'
   pull_request:
     branches:
       - main
 
 jobs:
-  sonar:
-    name: SonarQube Scan
+  sonar_scan:
     runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
+      - name: Set Up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Run SonarQube Scan
+      - name: Run SonarQube Scanner
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-           "& 'C:\Users\balamurugan.kaliyapp\Documents\SonarCLIScanner\sonar-scanner-5.0.1.3006-windows\bin\sonar-scanner.bat' `
-           -Dsonar.projectKey=TEST_AI `
-           -Dsonar.sources=. `
-           -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} `
-           -Dsonar.login=${{ secrets.SONAR_TOKEN }} `
-           -Dsonar.language=java"
-        shell: pwsh
-
+          "C:\Users\balamurugan.kaliyapp\Documents\SonarCLIScanner\sonar-scanner-5.0.1.3006-windows\bin\sonar-scanner.bat" ^
+            -Dsonar.projectKey=TEST_AI ^
+            -Dsonar.sources=. ^
+            -Dsonar.host.url=$env:SONAR_HOST_URL ^
+            -Dsonar.login=$env:SONAR_TOKEN ^
+            -Dsonar.language=java ^
+            -X
