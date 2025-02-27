@@ -22,10 +22,16 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Run SonarQube Scanner
+      - name: Set SonarScanner Path
         shell: cmd
         run: |
           SET PATH=C:\Users\balamurugan.kaliyapp\Documents\SonarCLIScanner\sonar-scanner-5.0.1.3006-windows\bin;%PATH%
+          echo %PATH%  # Debugging step to check if the path is set correctly
+
+      - name: Run SonarQube Scanner
+        shell: cmd
+        run: |
+          sonar-scanner ^
           -Dsonar.projectKey=TEST_AI ^
           -Dsonar.sources=. ^
           -Dsonar.host.url=https://panpsourceuat.ent.cgi.com/sonar/ ^
