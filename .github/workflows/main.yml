@@ -3,7 +3,7 @@ name: SonarQube Analysis
 on:
   push:
     branches:
-      - main  # Change to the branch you want to analyze
+      - main  # Change to your main branch
   pull_request:
     branches:
       - main
@@ -11,11 +11,18 @@ on:
 jobs:
   sonar:
     name: SonarQube Scan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Use "self-hosted" if your SonarQube is private
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Debug Network Connectivity
+        run: |
+          echo "Checking network connectivity..."
+          curl -v https://panpsourceuat.ent.cgi.com/sonar || echo "Failed to reach SonarQube"
+          ping -c 4 panpsourceuat.ent.cgi.com || echo "Ping failed"
+          nslookup panpsourceuat.ent.cgi.com || echo "DNS lookup failed"
 
       - name: Install SonarScanner CLI
         run: |
@@ -24,13 +31,13 @@ jobs:
           sudo mv sonar-scanner-5.0.1.3006-linux /opt/sonar-scanner
           echo "/opt/sonar-scanner/bin" >> $GITHUB_PATH
 
-      - name: Run SonarQube Scan
+      - name: Run SonarQube Scan with Debug Logs
         env:
           SONAR_TOKEN: "sqa_47073fd7cd44d214a50e771e3cbe9376199008c4"
-          SONAR_HOST_URL: "https://panpsourceuat.ent.cgi.com/sonar/"  # Change if using SonarCloud
+          SONAR_HOST_URL: "https://panpsourceuat.ent.cgi.com/sonar"
         run: |
           sonar-scanner \
             -Dsonar.projectKey=TEST_AI \
             -Dsonar.sources=. \
             -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKEN
+            -Dsonar.login=$SONAR_TOKEN -X  # Debug mode
